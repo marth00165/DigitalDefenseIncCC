@@ -1,3 +1,13 @@
+# Write a function that
+# takes two lists as input and produces one list as output.
+# The function should have the signature `def apply_port_exclusions(include_ports, exclude_ports)`.
+# The function should expect that the input lists will be a list of low-high pairs which are lists of length two.
+# The function should return a minimized and
+# ordered list of include port ranges that result after processing the exclude port ranges.
+# Include whatever tests and comments you normally provide for completed code.
+# Helper Function to try to remove duplicate excludes
+
+
 # Written using python3
 
 
