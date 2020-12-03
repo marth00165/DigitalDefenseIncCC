@@ -1,0 +1,42 @@
+
+Given a table that holds websites (WEBSITE_ID, Name, URL), website pages (PAGE_ID, WEBSITE_ID, path), and website vulnerabilities (VULN_ID, PAGE_ID, data), find all of the vulnerabilities on website foo.com that pertain to the login page login.html. Your SQL should be performant for larger data sets.
+
+Table websites:
+WEBSITE_ID, Name, URL
+1. foo, http://foo.com
+2. bar, http://foo.com
+
+Table pages:
+PAGE_ID, WEBSITE_ID, path
+1, 1, /login.html
+2, 1, /logout.html
+3, 1, /admin.html
+4, 2, /login.html
+5, 2, /logout.html
+6, 2, /admin.html
+
+Table vulnerabilities
+VULN_ID, PAGE_ID, data
+1, 1, SQL injection response blah
+2, 1, XXE response
+3, 1, Stored XSS response
+4, 2, Session hijack
+5, 4, XXE response
+6, 6, Default credentials resposne
+
+Input:
+All vulnerabilities for foo.com on login.html page
+Output:
+1, 1, SQL injection response blah
+2, 1, XXE response
+3, 1, Stored XSS response
+
+How do we make this performant when we have 10 billion unique vulnerabilities across hundreds of thousands of websites?
+
+
+
+The SQL Query to find all vulnerabilities for Login Page would be 
+
+SELECT * FROM vulnerabilities WHERE page_id=1
+
+to make this solution more Performant would be to index the page_id's in the vulnerabilities table.
