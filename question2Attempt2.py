@@ -21,6 +21,7 @@ def reduce_ports(include_range, exclude_range):
 
     # Create Ranges of new safe ports
     while len(safe_ports) > 0:
+
         new_port = safe_ports.pop(0)
         # if the current port range difference is greater than 1 create new range
         if new_port - templist[-1] > 1:
@@ -42,6 +43,10 @@ def apply_port_exclusions(include_ports, exclude_ports):
     # If no ports included return empty
     if len(include_ports) == 0:
         return []
+
+    # Sort arrays for order
+    include_ports.sort()
+    exclude_ports.sort()
 
     include_range_list = []
     exclude_range_list = []
@@ -66,10 +71,6 @@ def apply_port_exclusions(include_ports, exclude_ports):
 
     exclude_range = [
         port for sublist in exclude_range_list for port in sublist]
-
-    # Sort arrays for order
-    include_range.sort()
-    exclude_range.sort()
 
     # Function Removes all excluded ports and returns possible ports
     answer = reduce_ports(include_range, exclude_range)
