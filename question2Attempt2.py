@@ -11,12 +11,13 @@ def reduce_ports(include_range, exclude_range):
 
     # Create Ranges of new safe ports
     while len(safe_ports) > 0:
-        x = safe_ports.pop(0)
-        if x - templist[-1] > 1:
+        new_port = safe_ports.pop(0)
+        # if the current port range difference is just 1 include
+        if new_port - templist[-1] > 1:
             outlist.append(templist)
-            templist = [x]
-        else:
-            templist.append(x)
+            templist = [new_port]
+        else:  # else create new range
+            templist.append(new_port)
     outlist.append(templist)
 
     # Get 2 value pairs for ranges
