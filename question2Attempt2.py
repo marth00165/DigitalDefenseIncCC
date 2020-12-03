@@ -60,6 +60,7 @@ def apply_port_exclusions(include_ports, exclude_ports):
     include_range.sort()
     exclude_range.sort()
 
+    # Function Removes all excluded ports and returns possible ports
     answer = reduce_ports(include_range, exclude_range)
 
     return answer

@@ -7,36 +7,8 @@
 
 # Include whatever tests and comments you normally provide for completed code.
 
-# Examples:
-# input:
-# include_ports: [[80, 80], [22, 23], [8000, 9000]]
-# exclude_ports: [[1024, 1024], [8080, 8080]]
-# output: [[22, 23], [80, 80], [8000, 8079], [8081, 9000]]
+# Helper Function to try to remove duplicate excludes
 
-
-# input:
-# include_ports: [[8000, 9000], [80, 80], [22, 23]]
-# exclude_ports: [[1024, 1024], [8080, 8080]]
-# output:
-# [[22, 23], [80, 80], [8000, 8079], [8081, 9000]]
-
-# input:
-# include_ports: [[1,65535]]
-# exclude_ports: [[1000,2000], [500, 2500]]
-# output:
-# [[1, 499], [2501, 65535]]
-
-# input:
-# include_ports: [[1,1], [3, 65535], [2, 2]]
-# exclude_ports: [[1000, 2000], [500, 2500]]
-# output:
-# [[1, 499], [2501, 65535]]
-
-# input:
-# include_ports: []
-# exclude_ports: [[8080, 8080]]
-# output:
-# []
 
 def reduce_exclude_ports(exclude_ports):
     current_port_range = exclude_ports[0]
@@ -51,12 +23,15 @@ def reduce_exclude_ports(exclude_ports):
 
     return exclude_ports
 
+# Attempt for helper function to remove duplicate included ports
+
 
 def reduce_include_port(include_ports):
     # print(include_ports)
     return include_ports
 
 
+# Helper Function that removes excluded Ports
 def port_reducer(include_range, exclude_range):
     safe_ports = [port for port in include_range if port not in exclude_range]
     outlist = []
@@ -80,12 +55,14 @@ def port_reducer(include_range, exclude_range):
 def apply_port_exclusions(include_ports, exclude_ports):
     answer = []
 
+    # if no included ports return empty
     if len(include_ports) == 0:
         return []
 
     include_ports.sort()
     exclude_ports.sort()
 
+    # Check if included ports are in any of the excluded port ranges
     for include_port in include_ports:
         clear_counter = 0
         clear_target = len(exclude_ports)
@@ -99,19 +76,25 @@ def apply_port_exclusions(include_ports, exclude_ports):
             exclude_range = range(exclude1, exclude2)
             include_range = range(include1, include2)
 
+            # Using subsets to find if excluded ports present in included ports
             if (set(exclude_range).issubset(set(include_range))):
+                # If excluded ports exist remove them and return clean array
                 clear_ports = port_reducer(include_range, exclude_range)
                 # print(clear_ports)
                 for clear_port in clear_ports:
                     answer.append(clear_port)
             else:
+                # If clears all excluded ranges add to answer
                 clear_counter = clear_counter + 1
                 if clear_counter == clear_target:
                     answer.append(include_port)
 
-    # answer.sort()
+    # Sort for order
+    answer.sort()
     return answer
 
+
+# Testing and Test Cases
 
 include1 = [[80, 80], [22, 23], [8000, 9000]]
 exclude1 = [[1024, 1024], [8080, 8080]]
@@ -157,3 +140,7 @@ print("Test 2: ", test2)
 print("Test 3: ", test3)
 print("Test 4: ", test4)
 print("Test 5: ", test5)
+
+
+# In the end this approach didn't work because
+# I was trying to over complicate when to filter the excluded ports
