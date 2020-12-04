@@ -8,26 +8,122 @@
 # Helper Function to try to remove duplicate excludes
 
 
+def merge_intervals(intervals):
+    intervals.sort()
+
+    # Merges intervals of 1
+
+    i = 0
+
+    while i < len(intervals) - 1:
+        currentPort = intervals[i]
+        nextPort = intervals[i+1]
+        if nextPort[0] - currentPort[1] == 1:
+            currentPort[1] = nextPort[1]
+            intervals.remove(nextPort)
+        else:
+            i = i+1
+
+     # Merges overlapping intervals
+
+    i = 1
+
+    while i < len(intervals):
+
+        if intervals[i][0] <= intervals[i-1][1]:
+
+            intervals[i-1][0] = min(intervals[i-1][0], intervals[i][0])
+            intervals[i-1][1] = max(intervals[i-1][1], intervals[i][1])
+
+            intervals.pop(i)
+        else:
+            i = i+1
+
+    return intervals
+
+
 def apply_port_exclusions(include_ports, exclude_ports):
 
-    outlist = []
-    cleared_ports = []
-    templist = [safe_ports.pop(0)]
+    answer = []
 
-    # Create Ranges of new safe ports
-    while len(safe_ports) > 0:
+    if len(include_ports) == 0:
+        answer = []
 
-        new_port = safe_ports.pop(0)
-        # if the current port range difference is greater than 1 create new range
-        if new_port - templist[-1] > 1:
-            outlist.append(templist)
-            templist = [new_port]
-        else:  # else if difference is not greated than 1 include in range
-            templist.append(new_port)
-    outlist.append(templist)
+    merged_include_ports = merge_intervals(include_ports)
 
-    # Get 2 value pairs for ranges
-    for port_list in outlist:
-        cleared_ports.append([port_list[0], port_list[-1]])
+    merged_exclude_ports = merge_intervals(exclude_ports)
 
-    return cleared_ports
+    for includePort in merged_include_ports:
+        checks = 0
+
+        for excludePort in merged_exclude_ports:
+            if includePort[0] < excludePort[0] and includePort[1] < excludePort[0]:  # []()
+                checks = checks + 1
+            if includePort[0] > excludePort[1] and includePort[1] > excludePort[1]:  # ()[]
+                checks = checks + 1
+            # If No overlap with exclude push port
+            if checks == len(merged_exclude_ports):
+                answer.append(includePort)
+            # if overlap
+
+            # [()]
+            if includePort[0] < excludePort[0] and includePort[1] > excludePort[1]:
+                answer.append([includePort[0], excludePort[0] - 1])
+                answer.append([excludePort[1]+1, includePort[1]])
+
+            # ([)]
+            if includePort[0] > excludePort[0] and includePort[0] < excludePort[1] and includePort[1] > excludePort[1]:
+                answer.append([excludePort[1]+1, includePort[1]])
+
+            # [(])
+            if includePort[0] < excludePort[0] and excludePort[0] < includePort[1] and excludePort[1] > includePort[1]:
+                answer.append([includePort[0], excludePort[0] - 1])
+    return answer
+
+
+# Test Cases and Tests
+include1 = [[80, 80], [22, 23], [8000, 9000]]
+exclude1 = [[1024, 1024], [8080, 8080]]
+
+answer1 = [[22, 23], [80, 80], [8000, 8079], [8081, 9000]]
+
+
+include2 = [[8000, 9000], [80, 80], [22, 23]]
+exclude2 = [[1024, 1024], [8080, 8080]]
+
+answer2 = [[22, 23], [80, 80], [8000, 8079], [8081, 9000]]
+
+include3 = [[1, 65535]]
+exclude3 = [[1000, 2000], [500, 2500]]
+
+answer3 = [[1, 499], [2501, 65535]]
+
+
+include4 = [[1, 1], [2, 2], [3, 3], [4, 65535]]
+exclude4 = [[1000, 2000], [500, 2500]]
+
+answer4 = [[1, 499], [2501, 65535]]
+
+
+include5 = []
+exclude5 = [[8080, 8080]]
+answer5 = []
+
+
+test1 = apply_port_exclusions(include1, exclude1)  # Answer for Test input 1
+
+test2 = apply_port_exclusions(include2, exclude2)  # Answer for Test input 2
+
+test3 = apply_port_exclusions(include3, exclude3)  # Answer for Test input 3
+
+test4 = apply_port_exclusions(include4, exclude4)  # Answer for Test input 4
+
+test5 = apply_port_exclusions(include5, exclude5)  # Answer for Test input 5
+
+
+# If all test answer's match given answer every test passes
+print(f'Test 1 matches the answer 1: {test1 == answer1}')
+print(f'Test 2 matches the answer 2: {test2 == answer2}')
+print(f'Test 3 matches the answer 3: {test3 == answer3}')
+print(f'Test 4 matches the answer 4: {test4 == answer4}')
+print(f'Test 5 matches the answer 5: {test5 == answer5}')
