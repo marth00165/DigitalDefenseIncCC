@@ -78,13 +78,18 @@ def apply_port_exclusions(include_ports, exclude_ports):
             if checks == len(merged_exclude_ports):
                 answer.append(includePort)
 
-        for x in range(0, len(answer) - 1):
+        x = 0
+
+        while x < len(answer)-1:
             currPort = answer[x]
             nextPort = answer[x+1]
 
             if currPort[0] > nextPort[0]:
+                x = x-1
                 nextPort[0] = currPort[0]
                 answer.remove(currPort)
+            else:
+                x = x+1
 
     return answer
 
@@ -98,11 +103,11 @@ answer1 = [[22, 23], [80, 80], [8000, 8079], [8081, 9000]]
 
 # Fails this scenario
 
-include2 = [[8000, 9000], [80, 80], [22, 23], [1010, 1040]]
+include2 = [[8000, 9000], [80, 80], [22, 23], [1010, 1060]]
 exclude2 = [[1024, 1030], [1035, 1050], [8080, 8080]]
 
 answer2 = [[22, 23], [80, 80], [1010, 1023],
-           [1031, 1034], [8000, 8079], [8081, 9000]]
+           [1031, 1034], [1051, 1060], [8000, 8079], [8081, 9000]]
 
 
 include3 = [[1, 65535]]
