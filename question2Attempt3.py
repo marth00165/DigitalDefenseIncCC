@@ -71,6 +71,7 @@ def apply_port_exclusions(include_ports, exclude_ports):
 
     merged_exclude_ports = merge_intervals(exclude_ports)
 
+    # Creates imperfect answer array
     while len(merged_include_ports) > 0:
         includePort = merged_include_ports.pop(0)
 
