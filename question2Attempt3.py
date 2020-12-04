@@ -78,16 +78,6 @@ def apply_port_exclusions(include_ports, exclude_ports):
             if includePort[0] < excludePort[0] and excludePort[0] < includePort[1] and excludePort[1] > includePort[1]:
                 answer.append([includePort[0], excludePort[0] - 1])
 
-    for answerPort in answer:
-        for excludePort in merged_exclude_ports:
-            if answerPort[0] > excludePort[0] and answerPort[0] < excludePort[1]:
-                answer.remove(answerPort)
-                continue
-
-            if answerPort[1] > excludePort[0] and answerPort[1] < excludePort[1]:
-                answer.remove(answerPort)
-                continue
-    print(answer)
     return answer
 
 
