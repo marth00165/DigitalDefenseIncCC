@@ -118,9 +118,14 @@ test4 = apply_port_exclusions(include4, exclude4)  # Answer for Test input 4
 test5 = apply_port_exclusions(include5, exclude5)  # Answer for Test input 5
 
 
-# If all test answer's match given answer every test passes
-print(f'Test 1 matches the answer 1: {test1 == answer1}')
-print(f'Test 2 matches the answer 2: {test2 == answer2}')
-print(f'Test 3 matches the answer 3: {test3 == answer3}')
-print(f'Test 4 matches the answer 4: {test4 == answer4}')
-print(f'Test 5 matches the answer 5: {test5 == answer5}')
+def runTests():
+    assert test1 == answer1, f'Should be {answer1}'
+    assert test2 == answer2, f'Should be {answer2}'
+    assert test3 == answer3, f'Should be {answer3}'
+    assert test4 == answer4, f'Should be {answer4}'
+    assert test5 == answer5, f'Should be {answer5}'
+
+    print("All Tests Passed")
+
+
+runTests()
