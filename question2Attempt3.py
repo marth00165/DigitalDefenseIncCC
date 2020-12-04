@@ -42,6 +42,24 @@ def merge_intervals(intervals):
     return intervals
 
 
+def merge_edge_cases(intervals):
+    # Fix edge cases and merge those intervals
+    x = 0
+
+    while x < len(intervals)-1:
+        currPort = intervals[x]
+        nextPort = intervals[x+1]
+
+        if currPort[0] > nextPort[0]:
+            nextPort[0] = currPort[0]
+            intervals.remove(currPort)
+            x = x-1
+        else:
+            x = x+1
+
+    return intervals
+
+
 def apply_port_exclusions(include_ports, exclude_ports):
 
     answer = []
@@ -78,18 +96,7 @@ def apply_port_exclusions(include_ports, exclude_ports):
             if checks == len(merged_exclude_ports):
                 answer.append(includePort)
 
-        x = 0
-
-        while x < len(answer)-1:
-            currPort = answer[x]
-            nextPort = answer[x+1]
-
-            if currPort[0] > nextPort[0]:
-                x = x-1
-                nextPort[0] = currPort[0]
-                answer.remove(currPort)
-            else:
-                x = x+1
+    answer = merge_edge_cases(answer)
 
     return answer
 
@@ -139,7 +146,6 @@ test5 = apply_port_exclusions(include5, exclude5)  # Answer for Test input 5
 
 
 def runTests():
-    # print(test2)
     assert test1 == answer1, f'Should be {answer1}'
     assert test2 == answer2, f'Should be {answer2}'
     assert test3 == answer3, f'Should be {answer3}'
