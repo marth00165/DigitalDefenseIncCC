@@ -53,7 +53,9 @@ def apply_port_exclusions(include_ports, exclude_ports):
 
     merged_exclude_ports = merge_intervals(exclude_ports)
 
-    for includePort in merged_include_ports:
+    while len(merged_include_ports) > 0:
+        includePort = merged_include_ports.pop(0)
+
         checks = 0
 
         for excludePort in merged_exclude_ports:
@@ -61,22 +63,28 @@ def apply_port_exclusions(include_ports, exclude_ports):
                 checks = checks + 1
             if includePort[0] > excludePort[1] and includePort[1] > excludePort[1]:  # ()[]
                 checks = checks + 1
-            # If No overlap with exclude push port
-            if checks == len(merged_exclude_ports):
-                answer.append(includePort)
             # if overlap
             # [()]
             if includePort[0] < excludePort[0] and includePort[1] > excludePort[1]:
                 answer.append([includePort[0], excludePort[0] - 1])
                 answer.append([excludePort[1]+1, includePort[1]])
-
             # ([)]
             if includePort[0] > excludePort[0] and includePort[0] < excludePort[1] and includePort[1] > excludePort[1]:
                 answer.append([excludePort[1]+1, includePort[1]])
-
             # [(])
             if includePort[0] < excludePort[0] and excludePort[0] < includePort[1] and excludePort[1] > includePort[1]:
                 answer.append([includePort[0], excludePort[0] - 1])
+            # If No overlap with exclude push port
+            if checks == len(merged_exclude_ports):
+                answer.append(includePort)
+
+        for x in range(0, len(answer) - 1):
+            currPort = answer[x]
+            nextPort = answer[x+1]
+
+            if currPort[0] > nextPort[0]:
+                nextPort[0] = currPort[0]
+                answer.remove(currPort)
 
     return answer
 
@@ -126,8 +134,9 @@ test5 = apply_port_exclusions(include5, exclude5)  # Answer for Test input 5
 
 
 def runTests():
+    # print(test2)
     assert test1 == answer1, f'Should be {answer1}'
-    # assert test2 == answer2, f'Should be {answer2}'
+    assert test2 == answer2, f'Should be {answer2}'
     assert test3 == answer3, f'Should be {answer3}'
     assert test4 == answer4, f'Should be {answer4}'
     assert test5 == answer5, f'Should be {answer5}'
