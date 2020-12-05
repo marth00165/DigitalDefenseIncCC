@@ -60,17 +60,9 @@ def merge_edge_cases(intervals):
     return intervals
 
 
-def apply_port_exclusions(include_ports, exclude_ports):
+def create_imperfect_answer(merged_include_ports, merged_exclude_ports):
 
     answer = []
-
-    if len(include_ports) == 0:
-        answer = []
-
-    merged_include_ports = merge_intervals(include_ports)
-
-    merged_exclude_ports = merge_intervals(exclude_ports)
-
     # Creates imperfect answer array
     while len(merged_include_ports) > 0:
         includePort = merged_include_ports.pop(0)
@@ -96,8 +88,27 @@ def apply_port_exclusions(include_ports, exclude_ports):
             # If No overlap with exclude push port
             if checks == len(merged_exclude_ports):
                 answer.append(includePort)
+    return answer
 
-    answer = merge_edge_cases(answer)
+
+def apply_port_exclusions(include_ports, exclude_ports):
+
+    answer = None
+
+    if len(include_ports) == 0:
+        answer = []
+
+    merged_include_ports = merge_intervals(
+        include_ports)  # Merges Include Port intervals
+
+    merged_exclude_ports = merge_intervals(
+        exclude_ports)  # Merges Exclude Port intervals
+
+    imperfectAnswer = create_imperfect_answer(  # Gets answer without edge cases solved
+        merged_include_ports, merged_exclude_ports)
+
+    # Gets answer with edge cases solved
+    answer = merge_edge_cases(imperfectAnswer)
 
     return answer
 
@@ -119,9 +130,9 @@ answer2 = [[22, 23], [80, 80], [1010, 1023],
 
 
 include3 = [[1, 65535]]
-exclude3 = [[1000, 2000], [500, 2500]]
+exclude3 = [[1000, 2000], [600, 3000], [500, 2500]]
 
-answer3 = [[1, 499], [2501, 65535]]
+answer3 = [[1, 499], [3001, 65535]]
 
 
 include4 = [[1, 1], [2, 2], [3, 3], [4, 65535]]
